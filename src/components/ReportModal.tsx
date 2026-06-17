@@ -5,7 +5,6 @@ import { useAppStore } from '../store';
 import type { ReportableContentType, ReportReason } from '../types';
 
 interface ReportModalProps {
-  isOpen: boolean;
   onClose: () => void;
   targetType: ReportableContentType;
   targetId: string;
@@ -57,7 +56,6 @@ const typeLabels: Record<ReportableContentType, string> = {
 };
 
 export function ReportModal({
-  isOpen,
   onClose,
   targetType,
   targetId,
@@ -84,9 +82,6 @@ export function ReportModal({
       setIsSuccess(true);
       setTimeout(() => {
         onClose();
-        setIsSuccess(false);
-        setSelectedReason(null);
-        setDescription('');
       }, 1500);
     } catch (error) {
       console.error('提交举报失败:', error);
@@ -95,13 +90,12 @@ export function ReportModal({
     }
   };
 
-  if (!isOpen) return null;
-
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
       onClick={onClose}
     >
@@ -109,6 +103,7 @@ export function ReportModal({
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
+        transition={{ duration: 0.2 }}
         onClick={(e) => e.stopPropagation()}
         className="relative w-full max-w-lg bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden"
       >

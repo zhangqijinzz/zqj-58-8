@@ -52,7 +52,6 @@ export function ReportButton({
       <AnimatePresence>
         {isModalOpen && (
           <ReportModal
-            isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}
             targetType={targetType}
             targetId={targetId}
