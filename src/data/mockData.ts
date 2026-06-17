@@ -1,4 +1,4 @@
-import type { User, Song, Level, Chart, MVWork, VibrationSequence, VisualChart } from '../types';
+import type { User, Song, Level, Chart, MVWork, VibrationSequence, VisualChart, Report, Notification, ModerationLog } from '../types';
 
 export const mockUser: User = {
   id: 'user-001',
@@ -7,6 +7,7 @@ export const mockUser: User = {
   bio: '用视觉感受节奏，用震动体验音乐 🎵',
   experience: 12580,
   badges: ['新手创作者', '连击大师', '社区新星'],
+  role: 'player',
   settings: {
     vibrationIntensity: 0.8,
     brightness: 1.0,
@@ -15,6 +16,24 @@ export const mockUser: User = {
     particleDensity: 1.0,
   },
   createdAt: new Date('2024-01-15'),
+};
+
+export const mockAdminUser: User = {
+  id: 'admin-001',
+  username: '秩序守护者',
+  avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=admin',
+  bio: '维护社区秩序，创造良好的游戏环境',
+  experience: 99999,
+  badges: ['社区管理员', '秩序守护者', '资深玩家'],
+  role: 'admin',
+  settings: {
+    vibrationIntensity: 0.8,
+    brightness: 1.0,
+    colorTheme: 'cyberpunk',
+    sensitivity: 0.7,
+    particleDensity: 1.0,
+  },
+  createdAt: new Date('2023-06-01'),
 };
 
 const createVibrationPattern = (bpm: number, duration: number): VibrationSequence => {
@@ -175,6 +194,7 @@ export const mockCharts: Chart[] = [
       id: 'user-002',
       username: '极光创作者',
       avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=aurora',
+      role: 'creator',
     },
     description: '灵感来自北极光，用渐变色彩模拟极光流动，配合舒缓的震动节奏。',
     coverImage: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=aurora%20borealis%20northern%20lights%20green%20purple%20dance%20night%20sky&image_size=square',
@@ -195,6 +215,7 @@ export const mockCharts: Chart[] = [
       id: 'user-003',
       username: '雷霆之锤',
       avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=thunder',
+      role: 'creator',
     },
     description: '高难度快节奏谱面，闪电般的视觉效果配合强力震动，挑战你的极限！',
     coverImage: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=lightning%20storm%20thunder%20electric%20blue%20purple%20dramatic%20power&image_size=square',
@@ -215,6 +236,7 @@ export const mockCharts: Chart[] = [
       id: 'user-004',
       username: '樱之诗人',
       avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=sakura',
+      role: 'creator',
     },
     description: '春日樱花漫天飞舞，柔美而富有诗意的视觉谱面，适合入门玩家。',
     coverImage: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cherry%20blossom%20sakura%20falling%20petals%20pink%20spring%20japanese%20aesthetic&image_size=square',
@@ -235,6 +257,7 @@ export const mockCharts: Chart[] = [
       id: 'user-005',
       username: '机械之心',
       avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=mecha',
+      role: 'creator',
     },
     description: '赛博朋克风格的机械节奏，工业感十足的震动序列，硬核玩家推荐。',
     coverImage: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=mecha%20robot%20cyberpunk%20industrial%20gear%20metal%20neon%20futuristic&image_size=square',
@@ -257,6 +280,7 @@ export const mockMVWorks: MVWork[] = [
       id: 'user-006',
       username: '手语艺术家',
       avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=signer',
+      role: 'creator',
     },
     songId: 'song-001',
     song: mockSongs[0],
@@ -276,6 +300,7 @@ export const mockMVWorks: MVWork[] = [
       id: 'user-007',
       username: '光之舞者',
       avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=dancer',
+      role: 'creator',
     },
     songId: 'song-004',
     song: mockSongs[3],
@@ -295,6 +320,7 @@ export const mockMVWorks: MVWork[] = [
       id: 'user-008',
       username: '节奏诗人',
       avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=poet',
+      role: 'creator',
     },
     songId: 'song-002',
     song: mockSongs[1],
@@ -305,5 +331,134 @@ export const mockMVWorks: MVWork[] = [
     rating: 4.7,
     ratingCount: 76,
     createdAt: new Date('2024-06-11'),
+  },
+];
+
+export const mockReports: Report[] = [
+  {
+    id: 'report-001',
+    reporterId: 'user-001',
+    reporter: mockUser,
+    targetType: 'chart',
+    targetId: 'chart-002',
+    targetContent: {
+      title: '闪电风暴',
+      authorId: 'user-003',
+      authorName: '雷霆之锤',
+    },
+    reason: 'inappropriate_content',
+    description: '该谱面包含过于暴力的视觉效果，可能会对部分玩家造成不适。',
+    status: 'pending',
+    createdAt: new Date('2024-06-16T10:30:00'),
+  },
+  {
+    id: 'report-002',
+    reporterId: 'user-002',
+    reporter: { ...mockUser, id: 'user-002', username: '极光创作者' },
+    targetType: 'comment',
+    targetId: 'comment-001',
+    targetContent: {
+      content: '这谱面做的什么垃圾，作者会不会做谱？',
+      authorId: 'user-009',
+      authorName: '喷子玩家',
+    },
+    reason: 'harassment',
+    description: '该评论包含人身攻击和恶意辱骂内容，严重违反社区规范。',
+    status: 'pending',
+    createdAt: new Date('2024-06-16T14:20:00'),
+  },
+  {
+    id: 'report-003',
+    reporterId: 'user-004',
+    reporter: { ...mockUser, id: 'user-004', username: '樱之诗人' },
+    targetType: 'mvWork',
+    targetId: 'mv-004',
+    targetContent: {
+      title: '盗版手语MV',
+      authorId: 'user-010',
+      authorName: '抄袭大王',
+    },
+    reason: 'copyright_infringement',
+    description: '该MV作品未经授权复制了我的原创手语演绎内容，涉嫌侵权。',
+    status: 'reviewing',
+    createdAt: new Date('2024-06-15T09:15:00'),
+    reviewedBy: mockAdminUser,
+  },
+  {
+    id: 'report-004',
+    reporterId: 'user-005',
+    reporter: { ...mockUser, id: 'user-005', username: '机械之心' },
+    targetType: 'chart',
+    targetId: 'chart-006',
+    targetContent: {
+      title: '免费领取点券',
+      authorId: 'user-011',
+      authorName: '广告机器人',
+    },
+    reason: 'spam',
+    description: '该谱面标题和描述都是虚假广告，诱导用户点击外部链接。',
+    status: 'resolved',
+    createdAt: new Date('2024-06-14T16:45:00'),
+    reviewedAt: new Date('2024-06-14T17:00:00'),
+    reviewedBy: mockAdminUser,
+    moderationAction: 'delete',
+    moderatorNote: '已确认是垃圾广告，已删除该谱面并对发布账号进行禁言处理。',
+  },
+];
+
+export const mockNotifications: Notification[] = [
+  {
+    id: 'notif-001',
+    userId: 'user-001',
+    type: 'report_submitted',
+    title: '举报已提交',
+    message: '您提交的关于"闪电风暴"谱面的举报已收到，我们会尽快处理。',
+    relatedReportId: 'report-001',
+    read: false,
+    createdAt: new Date('2024-06-16T10:30:00'),
+  },
+  {
+    id: 'notif-002',
+    userId: 'user-005',
+    type: 'report_processed',
+    title: '举报处理结果',
+    message: '您举报的"免费领取点券"谱面已处理：确认违规，已删除。感谢您维护社区秩序！',
+    relatedReportId: 'report-004',
+    read: false,
+    createdAt: new Date('2024-06-14T17:00:00'),
+  },
+  {
+    id: 'notif-003',
+    userId: 'user-011',
+    type: 'content_removed',
+    title: '内容已被移除',
+    message: '您发布的"免费领取点券"谱面因涉嫌垃圾广告已被删除。如有异议可联系客服申诉。',
+    relatedReportId: 'report-004',
+    read: false,
+    createdAt: new Date('2024-06-14T17:00:00'),
+  },
+  {
+    id: 'notif-004',
+    userId: 'admin-001',
+    type: 'new_report',
+    title: '新的举报待处理',
+    message: '收到新的举报："闪电风暴"谱面涉嫌不当内容，请及时处理。',
+    relatedReportId: 'report-001',
+    read: false,
+    createdAt: new Date('2024-06-16T10:30:00'),
+  },
+];
+
+export const mockModerationLogs: ModerationLog[] = [
+  {
+    id: 'log-001',
+    reportId: 'report-004',
+    moderatorId: 'admin-001',
+    moderator: mockAdminUser,
+    action: 'delete',
+    reason: '已确认是垃圾广告，已删除该谱面并对发布账号进行禁言处理。',
+    targetType: 'chart',
+    targetId: 'chart-006',
+    createdAt: new Date('2024-06-14T17:00:00'),
   },
 ];

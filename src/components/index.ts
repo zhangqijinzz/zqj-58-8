@@ -6,3 +6,6 @@ export { MVCard } from './MVCard';
 export { Navbar } from './Navbar';
 export { ParticleBackground } from './ParticleBackground';
 export { WaveformVisualizer } from './WaveformVisualizer';
+export { ReportButton } from './ReportButton';
+export { ReportModal } from './ReportModal';
+export { NotificationCenter } from './NotificationCenter';

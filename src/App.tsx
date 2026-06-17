@@ -13,6 +13,7 @@ import CommunityPage from "@/pages/CommunityPage";
 import ChartDetailPage from "@/pages/ChartDetailPage";
 import UserProfilePage from "@/pages/UserProfilePage";
 import UserSettingsPage from "@/pages/UserSettingsPage";
+import AdminReviewPage from "@/pages/AdminReviewPage";
 
 export default function App() {
   return (
@@ -36,6 +37,7 @@ export default function App() {
           <Route path="/community/chart/:id" element={<ChartDetailPage />} />
           <Route path="/user" element={<UserProfilePage />} />
           <Route path="/user/settings" element={<UserSettingsPage />} />
+          <Route path="/admin/review" element={<AdminReviewPage />} />
         </Routes>
       </div>
     </Router>

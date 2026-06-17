@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -12,9 +12,12 @@ import {
   Menu,
   X,
   Zap,
+  Bell,
+  Shield,
 } from 'lucide-react';
 import { useAppStore } from '../store';
 import { cn } from '../lib/utils';
+import { NotificationCenter } from './NotificationCenter';
 
 const navItems = [
   { to: '/', label: '首页', icon: Home },
@@ -26,7 +29,11 @@ const navItems = [
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const notificationRef = useRef<HTMLButtonElement>(null);
   const user = useAppStore((state) => state.user);
+  const isAdmin = useAppStore((state) => state.isAdmin());
+  const unreadCount = useAppStore((state) => state.getUnreadNotificationCount());
 
   return (
     <motion.nav
@@ -82,6 +89,32 @@ export const Navbar = () => {
           </div>
 
           <div className="hidden md:flex items-center gap-3">
+            {isAdmin && (
+              <Link
+                to="/admin/review"
+                className="p-2 rounded-lg text-purple-400 hover:text-purple-300 hover:bg-purple-500/10 transition-colors relative"
+                title="内容审核"
+              >
+                <Shield className="w-5 h-5" />
+              </Link>
+            )}
+            <button
+              ref={notificationRef}
+              onClick={() => setShowNotifications(!showNotifications)}
+              className="p-2 rounded-lg text-moon-dim hover:text-moon-white hover:bg-white/5 transition-colors relative"
+            >
+              <Bell className="w-5 h-5" />
+              {unreadCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                  {unreadCount > 99 ? '99+' : unreadCount}
+                </span>
+              )}
+            </button>
+            <NotificationCenter
+              isOpen={showNotifications}
+              onClose={() => setShowNotifications(false)}
+              triggerRef={notificationRef}
+            />
             <Link to="/user/settings" className="p-2 rounded-lg text-moon-dim hover:text-moon-white hover:bg-white/5 transition-colors">
               <Settings className="w-5 h-5" />
             </Link>
@@ -95,6 +128,11 @@ export const Navbar = () => {
                 className="w-7 h-7 rounded-lg border border-neon-cyan/30"
               />
               <span className="text-sm font-medium text-moon-white">{user?.username}</span>
+              {isAdmin && (
+                <span className="px-1.5 py-0.5 bg-purple-500/20 text-purple-400 text-xs rounded">
+                  管理员
+                </span>
+              )}
             </Link>
           </div>
 
@@ -136,6 +174,33 @@ export const Navbar = () => {
                 </NavLink>
               ))}
               <div className="pt-4 border-t border-white/10 space-y-2">
+                {isAdmin && (
+                  <Link
+                    to="/admin/review"
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-purple-400 hover:bg-purple-500/10"
+                  >
+                    <Shield className="w-5 h-5" />
+                    内容审核中心
+                  </Link>
+                )}
+                <button
+                  onClick={() => {
+                    setShowNotifications(true);
+                    setIsOpen(false);
+                  }}
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-moon-dim hover:bg-white/5 hover:text-moon-white"
+                >
+                  <div className="relative">
+                    <Bell className="w-5 h-5" />
+                    {unreadCount > 0 && (
+                      <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                        {unreadCount > 9 ? '9+' : unreadCount}
+                      </span>
+                    )}
+                  </div>
+                  通知中心
+                </button>
                 <Link
                   to="/user"
                   onClick={() => setIsOpen(false)}

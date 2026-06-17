@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Heart, Play, Download, User } from 'lucide-react';
+import { Heart, Play, Download } from 'lucide-react';
 import type { Chart } from '../types';
 import { DifficultyBadge } from './DifficultyBadge';
+import { ReportButton } from './ReportButton';
 import { useAppStore } from '../store';
 import { cn } from '../lib/utils';
 import { triggerVibration } from '../utils/vibration';
@@ -100,7 +101,7 @@ export const ChartCard = ({ chart, index = 0 }: ChartCardProps) => {
             />
             <span>{chart.user.username}</span>
           </Link>
-          <div className="flex items-center gap-3 text-xs text-moon-dim">
+          <div className="flex items-center gap-2 text-xs text-moon-dim">
             <span className="flex items-center gap-1">
               <Download className="w-3.5 h-3.5" />
               {chart.playCount}
@@ -109,6 +110,17 @@ export const ChartCard = ({ chart, index = 0 }: ChartCardProps) => {
               <Heart className="w-3.5 h-3.5" />
               {chart.likes}
             </span>
+            <ReportButton
+              targetType="chart"
+              targetId={chart.id}
+              targetContent={{
+                title: chart.title,
+                authorId: chart.userId,
+                authorName: chart.user.username,
+              }}
+              size="sm"
+              variant="ghost"
+            />
           </div>
         </div>
       </div>

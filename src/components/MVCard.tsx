@@ -1,8 +1,8 @@
-import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Play, Star, Heart, User } from 'lucide-react';
+import { Play, Star, Heart } from 'lucide-react';
 import type { MVWork } from '../types';
 import { triggerVibration } from '../utils/vibration';
+import { ReportButton } from './ReportButton';
 
 interface MVCardProps {
   work: MVWork;
@@ -64,12 +64,23 @@ export const MVCard = ({ work, index = 0 }: MVCardProps) => {
             />
             <span className="text-sm text-moon-dim">{work.user.username}</span>
           </div>
-          <div className="flex items-center gap-3 text-xs text-moon-dim">
+          <div className="flex items-center gap-2 text-xs text-moon-dim">
             <span className="flex items-center gap-1">
               <Heart className="w-3.5 h-3.5 text-neon-pink" />
               {work.likes}
             </span>
             <span>({work.ratingCount}评价)</span>
+            <ReportButton
+              targetType="mvWork"
+              targetId={work.id}
+              targetContent={{
+                title: work.title,
+                authorId: work.userId,
+                authorName: work.user.username,
+              }}
+              size="sm"
+              variant="ghost"
+            />
           </div>
         </div>
       </div>

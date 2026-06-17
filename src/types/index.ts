@@ -54,6 +54,7 @@ export interface User {
   bio: string;
   experience: number;
   badges: string[];
+  role: UserRole;
   settings: UserSettings;
   createdAt: Date;
 }
@@ -169,4 +170,74 @@ export interface GameState {
 export interface HitResult {
   type: 'perfect' | 'great' | 'good' | 'miss';
   score: number;
+}
+
+export type UserRole = 'player' | 'creator' | 'admin';
+
+export type ReportableContentType = 'chart' | 'comment' | 'mvWork';
+
+export type ReportReason =
+  | 'inappropriate_content'
+  | 'copyright_infringement'
+  | 'harassment'
+  | 'spam'
+  | 'malicious_behavior'
+  | 'other';
+
+export type ReportStatus = 'pending' | 'reviewing' | 'resolved' | 'dismissed';
+
+export type ModerationAction = 'approve' | 'warn' | 'delete';
+
+export interface Report {
+  id: string;
+  reporterId: string;
+  reporter: User;
+  targetType: ReportableContentType;
+  targetId: string;
+  targetContent?: {
+    title?: string;
+    content?: string;
+    authorId?: string;
+    authorName?: string;
+  };
+  reason: ReportReason;
+  description: string;
+  status: ReportStatus;
+  createdAt: Date;
+  reviewedAt?: Date;
+  reviewedBy?: User;
+  moderationAction?: ModerationAction;
+  moderatorNote?: string;
+}
+
+export type NotificationType =
+  | 'report_submitted'
+  | 'report_processed'
+  | 'moderation_warning'
+  | 'content_removed'
+  | 'content_approved'
+  | 'new_report'
+  | 'system';
+
+export interface Notification {
+  id: string;
+  userId: string;
+  type: NotificationType;
+  title: string;
+  message: string;
+  relatedReportId?: string;
+  read: boolean;
+  createdAt: Date;
+}
+
+export interface ModerationLog {
+  id: string;
+  reportId: string;
+  moderatorId: string;
+  moderator: User;
+  action: ModerationAction;
+  reason: string;
+  targetType: ReportableContentType;
+  targetId: string;
+  createdAt: Date;
 }

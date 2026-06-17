@@ -5,7 +5,6 @@ import {
   Play,
   Heart,
   Download,
-  User,
   MessageSquare,
   Send,
   ThumbsUp,
@@ -16,6 +15,7 @@ import {
 import { useAppStore } from '../store';
 import { DifficultyBadge } from '../components/DifficultyBadge';
 import { WaveformVisualizer } from '../components/WaveformVisualizer';
+import { ReportButton } from '../components/ReportButton';
 import { triggerVibration } from '../utils/vibration';
 import type { Comment } from '../types';
 import { cn } from '../lib/utils';
@@ -32,6 +32,7 @@ const mockComments: Comment[] = [
       bio: '',
       experience: 5000,
       badges: [],
+      role: 'player',
       settings: { vibrationIntensity: 0.8, brightness: 1, colorTheme: '', sensitivity: 0.5, particleDensity: 1 },
       createdAt: new Date(),
     },
@@ -49,6 +50,7 @@ const mockComments: Comment[] = [
       bio: '',
       experience: 2000,
       badges: [],
+      role: 'player',
       settings: { vibrationIntensity: 0.8, brightness: 1, colorTheme: '', sensitivity: 0.5, particleDensity: 1 },
       createdAt: new Date(),
     },
@@ -66,6 +68,7 @@ const mockComments: Comment[] = [
       bio: '',
       experience: 20000,
       badges: [],
+      role: 'creator',
       settings: { vibrationIntensity: 0.8, brightness: 1, colorTheme: '', sensitivity: 0.5, particleDensity: 1 },
       createdAt: new Date(),
     },
@@ -248,12 +251,12 @@ export default function ChartDetailPage() {
               />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               <motion.button
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={handlePlay}
-                className="col-span-1 sm:col-span-1 flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-neon-cyan via-electric-purple to-vibrant-orange text-ocean-dark font-display font-bold text-lg rounded-xl hover:shadow-neon-cyan hover:shadow-neon-purple transition-all duration-500"
+                className="col-span-2 sm:col-span-1 flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-neon-cyan via-electric-purple to-vibrant-orange text-ocean-dark font-display font-bold text-lg rounded-xl hover:shadow-neon-cyan hover:shadow-neon-purple transition-all duration-500"
               >
                 <Play className="w-5 h-5 ml-0.5" />
                 开始游玩
@@ -283,6 +286,18 @@ export default function ChartDetailPage() {
                 <Download className="w-5 h-5" />
                 下载
               </motion.button>
+
+              <ReportButton
+                targetType="chart"
+                targetId={currentChart.id}
+                targetContent={{
+                  title: currentChart.title,
+                  authorId: currentChart.userId,
+                  authorName: currentChart.user.username,
+                }}
+                size="md"
+                variant="default"
+              />
             </div>
           </div>
         </motion.div>
@@ -357,14 +372,27 @@ export default function ChartDetailPage() {
                       <span className="font-display font-semibold text-moon-white hover:text-neon-cyan transition-colors cursor-pointer">
                         {comment.user.username}
                       </span>
-                      <span className="text-xs text-moon-dim">
-                        {new Date(comment.createdAt).toLocaleString('zh-CN', {
-                          month: 'short',
-                          day: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-moon-dim">
+                          {new Date(comment.createdAt).toLocaleString('zh-CN', {
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </span>
+                        <ReportButton
+                          targetType="comment"
+                          targetId={comment.id}
+                          targetContent={{
+                            content: comment.content,
+                            authorId: comment.userId,
+                            authorName: comment.user.username,
+                          }}
+                          size="sm"
+                          variant="ghost"
+                        />
+                      </div>
                     </div>
                     <p className="text-moon-dim leading-relaxed">{comment.content}</p>
                     <div className="mt-3 flex items-center gap-4">
